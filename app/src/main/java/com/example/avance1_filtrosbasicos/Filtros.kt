@@ -1,16 +1,13 @@
 package com.example.avance1_filtrosbasicos
 
-import android.R.attr
 import android.graphics.*
 import kotlin.math.min
 
 
 object Filtros {
-
     fun gamma(src: Bitmap, color: Double): Bitmap {
-
-        val red :Double = (color + 2) / 10.0
-        val green:Double = (color + 2) / 10.0
+        val red: Double = (color + 2) / 10.0
+        val green: Double = (color + 2) / 10.0
         val blue: Double = (color + 2) / 10.0
         // create output image
         // create output image
@@ -96,8 +93,8 @@ object Filtros {
         // get contrast value
         //val contrast = Math.pow((100 + value) / 100, 2.0)
 
-        var contrast = (100.0+50.0)/100.0
-        contrast = contrast*contrast
+        var contrast = (100.0 + 50.0) / 100.0
+        contrast = contrast * contrast
 
         // scan through all pixels
         for (x in 0 until width) {
@@ -134,7 +131,7 @@ object Filtros {
         return bmOut
     }
 
-    fun contraste(bitmap: Bitmap, valor: Int): Bitmap {
+    /* fun contraste(bitmap: Bitmap, valor: Int): Bitmap {
         //Saco el tamño de la imagen para poder ir pixel por picel
         var bitmap2 = bitmap
         val ancho = bitmap2.width
@@ -188,9 +185,8 @@ object Filtros {
                 salida.setPixel(x, y, Color.argb(a, r, g, b))
             }
         }
-
         return salida
-    }
+    }*/
 
     fun gamma(src: Bitmap): Bitmap {
         var src = src
@@ -281,7 +277,6 @@ object Filtros {
         return bitmapoutput
     }
 
-
     fun rojo(bitmap: Bitmap): Bitmap {
         var bitmap2 = bitmap
         var a: Int
@@ -364,7 +359,7 @@ object Filtros {
         // Tamaño de la imagen
         var imagen = imagenB
         val ancho = imagen.width
-        val alto= imagen.height
+        val alto = imagen.height
         //Crear el bitmap a enviar
         val salida = Bitmap.createBitmap(ancho, alto, imagen.config)
         // Color rgb
@@ -409,6 +404,7 @@ object Filtros {
 
         return salida
     }
+
     fun escalagris(imagenB: Bitmap): Bitmap {
         //Arreglo, en lugar del for
         var imagen = imagenB
@@ -419,8 +415,8 @@ object Filtros {
             0.0f, 0.0f, 0.0f, 1.0f, 0.0f
         )
         val colorMatrixGray = ColorMatrix(colorgris)
-        val w = imagen.width +1700
-        val h = imagen.height +1700
+        val w = imagen.width + 1700
+        val h = imagen.height + 1700
         val bitmapResultado = Bitmap
             .createBitmap(w, h, Bitmap.Config.ARGB_8888)
         val canvasResult = Canvas(bitmapResultado)
@@ -429,5 +425,153 @@ object Filtros {
         paint.colorFilter = filter
         canvasResult.drawBitmap(imagen, 10f, 0f, paint)
         return bitmapResultado
+    }
+
+
+
+
+    //funciones para los filtros de convolucion
+    var size = 3
+
+    fun Smooth(b: Bitmap, nWeight: Int /* default to 1 */): Bitmap {
+        val m = ConvolutionMatrix(3)
+        m.setAll(1.0)
+        m.Offset = nWeight + 0.0
+        m.Factor = nWeight + 8.0
+        return ConvolutionMatrix.computeConvolution3x3(b, m)
+    }
+
+    fun gaussian(src: Bitmap): Bitmap {
+        val GaussianBlurConfig = arrayOf(
+            doubleArrayOf(1.0, 2.0, 1.0),
+            doubleArrayOf(2.0, 4.0, 2.0),
+            doubleArrayOf(1.0, 2.0, 1.0)
+        )
+        val matrix2 = applyConfig(GaussianBlurConfig)
+        return computeConvolution3x3(src, matrix2, 16.0, 0.0)
+    }
+
+    fun sharpen(src: Bitmap): Bitmap {
+        val SharpConfig = arrayOf(
+            doubleArrayOf(0.0, -2.0, 0.0),
+            doubleArrayOf(-2.0, 11.0, -2.0),
+            doubleArrayOf(0.0, -2.0, 0.0)
+        )
+        val matrix2 = applyConfig(SharpConfig)
+        return computeConvolution3x3(src, matrix2, 3.0, 0.0)
+    }
+
+    fun meanRe(src: Bitmap): Bitmap {
+        val SharpConfig = arrayOf(
+            doubleArrayOf(-1.0, -1.0, -1.0),
+            doubleArrayOf(-1.0, 9.0, -1.0),
+            doubleArrayOf(-1.0, -1.0, -1.0)
+        )
+        val matrix2 = applyConfig(SharpConfig)
+        return computeConvolution3x3(src, matrix2, 1.0, 0.0)
+    }
+
+    fun embossing(src: Bitmap): Bitmap {
+        val SharpConfig = arrayOf(
+            doubleArrayOf(-1.0, 0.0, -1.0),
+            doubleArrayOf(0.0, 4.0, 0.0),
+            doubleArrayOf(-1.0, 0.0, -1.0)
+        )
+        val matrix2 = applyConfig(SharpConfig)
+        return computeConvolution3x3(src, matrix2, 1.0, 127.0)
+    }
+
+    fun edgeDetection(src: Bitmap): Bitmap {
+        val SharpConfig = arrayOf(
+            doubleArrayOf(1.0, 1.0, 1.0),
+            doubleArrayOf(0.0, 0.0, 0.0),
+            doubleArrayOf(-1.0, -1.0, -1.0)
+        )
+        val matrix2 = applyConfig(SharpConfig)
+        return computeConvolution3x3(src, matrix2, 1.0, 127.0)
+    }
+
+
+
+
+
+    fun applyConfig(config: Array<DoubleArray>): Array<DoubleArray> {
+        val matrix = Array(size) { DoubleArray(size) }
+        for (x in 0 until ConvolutionMatrix.SIZE) {
+            for (y in 0 until ConvolutionMatrix.SIZE) {
+                matrix[x][y] = config[x][y]
+            }
+        }
+        return matrix
+    }
+
+    const val SIZE = 3
+    fun computeConvolution3x3(src: Bitmap, Matrix: Array<DoubleArray>, Factor:Double, Offset:Double): Bitmap {
+        var src = src
+        val width = src!!.width
+        val height = src.height
+        val result = Bitmap.createBitmap(width, height, src.config)
+        var A: Int
+        var R: Int
+        var G: Int
+        var B: Int
+        var sumR: Int
+        var sumG: Int
+        var sumB: Int
+        val pixels = Array(SIZE) { IntArray(SIZE) }
+        for (y in 0 until height - 2) {
+            for (x in 0 until width - 2) {
+                // get pixel matrix
+                for (i in 0 until SIZE) {
+                    for (j in 0 until SIZE) {
+                        pixels[i][j] = src.getPixel(x + i, y + j)
+                    }
+                }
+                // get alpha of center pixel
+                A = Color.alpha(pixels[1][1])
+
+                // init color sum
+                sumB = 0
+                sumG = sumB
+                sumR = sumG
+
+                // get sum of RGB on matrix
+                for (i in 0 until SIZE) {
+                    for (j in 0 until SIZE) {
+                        sumR += (Color.red(pixels[i][j]) * Matrix[i][j]).toInt()
+                        sumG += (Color.green(pixels[i][j]) * Matrix[i][j]).toInt()
+                        sumB += (Color.blue(pixels[i][j]) * Matrix[i][j]).toInt()
+                    }
+                }
+
+                // get final Red
+                R = ((sumR / Factor) + Offset).toInt()
+                if (R < 0) {
+                    R = 0
+                } else if (R > 255) {
+                    R = 255
+                }
+
+                // get final Green
+                G = ((sumG / Factor) + Offset).toInt()
+                if (G < 0) {
+                    G = 0
+                } else if (G > 255) {
+                    G = 255
+                }
+
+                // get final Blue
+                B = ((sumB / Factor) + Offset).toInt()
+                if (B < 0) {
+                    B = 0
+                } else if (B > 255) {
+                    B = 255
+                }
+                // apply new pixel
+                result.setPixel(x + 1, y + 1, Color.argb(A, R, G, B))
+            }
+        }
+        // final image
+        return result
     }
 }

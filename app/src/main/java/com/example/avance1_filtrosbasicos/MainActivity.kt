@@ -14,7 +14,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         val imagen: ImageView = findViewById(R.id.imageView)
         val imagen2: ImageView = findViewById(R.id.imageView2)
         val imagen3: ImageView = findViewById(R.id.imageView3)
@@ -41,14 +40,11 @@ class MainActivity : AppCompatActivity() {
 
         //iv. Contsrate
         imagen4.setImageBitmap(Filtros.contrast(bm, 100.0))
-        imagen5.setImageBitmap(Filtros.contraste(bm,90))
 
         //v.gamma
-        imagen6.setImageBitmap(Filtros.gamma(bm))
-        imagen7.setImageBitmap(Filtros.gamma(bm, 0.0))
-        imagen8.setImageBitmap(Filtros.gamma(bm, 5.0)) //oscuro
-        imagen9.setImageBitmap(Filtros.gamma(bm, 10.0)) //normal
-        imagen10.setImageBitmap(Filtros.gamma(bm, 15.0)) //claro
+        imagen7.setImageBitmap(Filtros.gamma(bm, 0.0))//oscuro
+        imagen8.setImageBitmap(Filtros.gamma(bm, 5.0)) //normal
+        imagen9.setImageBitmap(Filtros.gamma(bm, 10.0)) //claro
 
         //vi. Separación de canales (rojo, verde, azul)
         //azul
@@ -60,12 +56,22 @@ class MainActivity : AppCompatActivity() {
 
         //b. Filtros de convolución
         //i. Smoothing
+        imagen4.setImageBitmap(Filtros.Smooth(bm, 1))
 
         //ii. Gaussian Blur
+        imagen5.setImageBitmap(Filtros.gaussian(bm))
+
         //iii. Sharpen
+        imagen6.setImageBitmap(Filtros.sharpen(bm))
+
         //iv. Mean Removal
+        imagen7.setImageBitmap(Filtros.meanRe(bm))
+
         //v. Embossing
+        imagen8.setImageBitmap(Filtros.embossing(bm))
+
         //vi. Edge Detection
+        imagen9.setImageBitmap(Filtros.edgeDetection(bm))
 
     }
 }
