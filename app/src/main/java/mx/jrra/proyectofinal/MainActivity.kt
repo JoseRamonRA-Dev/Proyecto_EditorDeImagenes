@@ -5,13 +5,21 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import uk.co.senab.photoview.PhotoViewAttacher
+
 
 class MainActivity : AppCompatActivity() {
     //Variable para la URI de la foto que tomo el usuario
@@ -20,17 +28,92 @@ class MainActivity : AppCompatActivity() {
     private val Respuesta = 1001
     //Para la camara creamos un codigo
     private val RespuestaCamara = 1002
-
+    private var bandera = 0
+    private lateinit var imgBit: Bitmap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //Para el spinner
+        val adaptador = ArrayAdapter.createFromResource(
+            this, R.array.filtros_array,
+            android.R.layout.simple_spinner_item
+        )
+        val opciones: Spinner = findViewById(R.id.filtros)
+        adaptador.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        opciones.adapter = adaptador
         //Funciones para cuando se pulsen los botones
         btngaleria()
         btnCamara()
+        btnRegresar()
+        opciones.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                Toast.makeText(
+                    applicationContext,
+                    "No se ha seleccionado ningun filtro",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val pos = parent.getItemAtPosition(position)
+
+                if(pos.toString() == "Inversión o Negativo"){
+                    imagen.setImageBitmap(Filtros.invertido(imgBit))
+                    val photoViewAttacher = PhotoViewAttacher(imagen)
+                }else if(pos.toString() == "Escala de grises"){
+                    imagen.setImageBitmap(Filtros.escalagris(imgBit))
+                    val photoViewAttacher = PhotoViewAttacher(imagen)
+                }else if(pos.toString() == "Brillo"){
+                    imagen.setImageBitmap(Filtros.brillo(imgBit, 100))
+                }else if(pos.toString() == "Contraste"){
+                    imagen.setImageBitmap(Filtros.contraste(imgBit, 100.0))
+                }else if(pos.toString() == "Gamma"){
+                    imagen.setImageBitmap(Filtros.gamma(imgBit, 5.0))
+                }else if (pos.toString() == "Separacion de canal: Rojo"){
+                    imagen.setImageBitmap(Filtros.rojo(imgBit))
+                }else if(pos.toString() == "Separacion de canal: Verde"){
+                    imagen.setImageBitmap(Filtros.verde(imgBit))
+                }else if(pos.toString() == "Separacion de canal: Azul"){
+                    imagen.setImageBitmap(Filtros.azul(imgBit))
+                }else if(pos.toString() == "Smoothing"){
+                    imagen.setImageBitmap(Filtros.Smoothing(imgBit, 1))
+                }else if(pos.toString() == "Gaussian Blur"){
+                    imagen.setImageBitmap(Filtros.gaussian(imgBit))
+                }else if(pos.toString() == "Sharpen"){
+                    imagen.setImageBitmap(Filtros.sharpen(imgBit))
+                }else if(pos.toString() == "Mean Removal"){
+                    imagen.setImageBitmap(Filtros.MeanRemoval(imgBit))
+                }else if(pos.toString() == "Embossing"){
+                    imagen.setImageBitmap(Filtros.embossing(imgBit))
+                }else if(pos.toString() == "Edge Detection"){
+                    imagen.setImageBitmap(Filtros.edgeDetection(imgBit))
+                }else if(pos.toString() == "Bosquejo"){
+                    imagen.setImageBitmap(Filtros.Bosquejo(imgBit))
+                }else if(pos.toString() == "Aumento"){
+                    imagen.setImageBitmap(Filtros.Aumento(imgBit, 1, 70f))
+                }else if(pos.toString() == "Matiz"){
+                    imagen.setImageBitmap(Filtros.matiz(imgBit, 180f))
+                }else if(pos.toString() == "Sepia"){
+                    imagen.setImageBitmap(Filtros.sepia(imgBit))
+                }else if(pos.toString() == "Noise"){
+                    imagen.setImageBitmap(Filtros.noise(imgBit))
+                }
+            }
+        }
+    }
+    private fun btnRegresar(){
+        regresar.setOnClickListener{
+            lay1.setVisibility(View.VISIBLE)
+            lay2.setVisibility(View.INVISIBLE)
+        }
     }
     private fun btngaleria(){
        botonGaleria.setOnClickListener {
-            //Version de android instalada
+           //Version de android instalada
            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                //Ver si tiene permiso dicho dispositivo
                if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
@@ -68,19 +151,27 @@ class MainActivity : AppCompatActivity() {
         when(requestCode){
             //Para ver cual fue el resultado
             Respuesta -> {
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     galeria()
-                }else{
-                    Toast.makeText(applicationContext,"No diste el permiso para acceder a tus imagenes",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "No diste el permiso para acceder a tus imagenes",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
             //Depende de si el usuario dio o no permisos hacemos que realice la opcion de abrir camara
             //Pero si no dio el permiso decirle que no dio los permisos para poder acceder a su camara
             RespuestaCamara -> {
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Camara()
-                }else{
-                    Toast.makeText(applicationContext,"No diste el permiso para acceder a tu Camara",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "No diste el permiso para acceder a tu Camara",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -95,12 +186,18 @@ class MainActivity : AppCompatActivity() {
             //Entonces la imagen seleccionada la ponemos en el Image View que tenemos
             //Le damos la direccion con setImagenUri y con la infromacion que trae data que es quien trae la url de la imagen seleccionada
             imagen.setImageURI(data?.data)
+            lay1.setVisibility(View.INVISIBLE)
+            lay2.setVisibility(View.VISIBLE)
+            imgBit = (imagen.getDrawable() as BitmapDrawable).bitmap
         }
 
         //Checamos que se haya tomado la foto y la peticion venga de RespuestaCamara
         if(resultCode == Activity.RESULT_OK && requestCode == RespuestaCamara){
             //Hice lo mismo que en la parte anterior, solo le damos el contenido a nuestra ImagenView
             imagen.setImageURI(FotoCap)
+            lay1.setVisibility(View.INVISIBLE)
+            lay2.setVisibility(View.VISIBLE)
+            imgBit = (imagen.getDrawable() as BitmapDrawable).bitmap
         }
     }
 

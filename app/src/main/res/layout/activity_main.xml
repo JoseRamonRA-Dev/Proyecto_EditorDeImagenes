@@ -5,35 +5,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/gradiente"
     tools:context=".MainActivity">
-
+    <mx.jrra.proyectofinal.ControlPersonalizado
+        android:id="@+id/filtrostex"
+        android:layout_height="50dip"
+        android:layout_width="match_parent"
+        />
     <ImageView
         android:id="@+id/imagen"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="@android:dimen/thumbnail_height"
         android:src="@drawable/camaraicono"
         />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:textAlignment="center"
-        android:gravity="center_horizontal">
-    <Button
+        android:gravity="center_horizontal"
+        android:id="@+id/lay1">
+    <ImageButton
         android:id="@+id/botonGaleria"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Abrir Galeria"
-        android:background="@color/colorAccent"
+        android:background="@null"
+        android:src="@drawable/fondogaleria1"
+
         />
-    <Button
+    <ImageButton
         android:id="@+id/botonFoto"
         android:layout_marginLeft="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tomar Foto"
-        android:background="@color/colorAccent"
+        android:background="@null"
+        android:src="@drawable/fondofoto1"
         />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:visibility="invisible"
+        android:id="@+id/lay2">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:fontFamily="cursive"
+            android:text="Elige el filtro"
+            android:textSize="30dp"/>
+
+        <Spinner
+            android:id="@+id/filtros"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="cursive"
+            android:layout_marginTop="10dp"/>
+
+        <ImageButton
+            android:id="@+id/regresar"
+            android:layout_width="wrap_content"
+            android:layout_height="127dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="25dp"
+            android:background="@null"
+            android:src="@drawable/botonregresar1" />
+    </LinearLayout>
+
 </LinearLayout>
