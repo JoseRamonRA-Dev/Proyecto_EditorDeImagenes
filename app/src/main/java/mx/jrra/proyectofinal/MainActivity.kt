@@ -18,7 +18,6 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import uk.co.senab.photoview.PhotoViewAttacher
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private val RespuestaCamara = 1002
     private var bandera = 0
     private lateinit var imgBit: Bitmap
+    private lateinit var imgBit2: Bitmap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -45,6 +45,11 @@ class MainActivity : AppCompatActivity() {
         btngaleria()
         btnCamara()
         btnRegresar()
+        //Funciones para el zoom
+        acercar()
+        alejar()
+        //Funcion para guardar la imagen con el filtro puesto
+        guardarIm()
         opciones.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>) {
                 Toast.makeText(
@@ -60,13 +65,11 @@ class MainActivity : AppCompatActivity() {
                 id: Long
             ) {
                 val pos = parent.getItemAtPosition(position)
-
+                //Du acuerdo a la seleccion del spinner se applicara un filtro y se volvera a ingresar al ImagenView, ya con el filtro
                 if(pos.toString() == "Inversión o Negativo"){
                     imagen.setImageBitmap(Filtros.invertido(imgBit))
-                    val photoViewAttacher = PhotoViewAttacher(imagen)
                 }else if(pos.toString() == "Escala de grises"){
                     imagen.setImageBitmap(Filtros.escalagris(imgBit))
-                    val photoViewAttacher = PhotoViewAttacher(imagen)
                 }else if(pos.toString() == "Brillo"){
                     imagen.setImageBitmap(Filtros.brillo(imgBit, 100))
                 }else if(pos.toString() == "Contraste"){
@@ -102,13 +105,38 @@ class MainActivity : AppCompatActivity() {
                 }else if(pos.toString() == "Noise"){
                     imagen.setImageBitmap(Filtros.noise(imgBit))
                 }
+
+                imgBit = (imagen.getDrawable() as BitmapDrawable).bitmap
+
             }
         }
     }
     private fun btnRegresar(){
+        //En caso de que se quiera volver a capturar una nueva imagen, este boton vuelve a mostrar las opciones
+        //De galeria y opcion para tomar foto y hace que desaparezca los filtros
         regresar.setOnClickListener{
             lay1.setVisibility(View.VISIBLE)
             lay2.setVisibility(View.INVISIBLE)
+        }
+    }
+    private fun guardarIm(){
+        guardar.setOnClickListener {
+            //Creamos una instancia de la clase Guardar, para enviarle la imagen a guardar en el dispositivo
+            val dispositivo = Guardar()
+            dispositivo.guardar(this, imgBit)
+        }
+    }
+    private fun acercar(){
+        zoomIm.setOnClickListener {
+            //Para el zoom enviamos la imagen y esta sera procesada por la funcion Zoom
+            imagen.setImageBitmap(Filtros.zoom(imgBit))
+        }
+    }
+    private fun alejar(){
+        alejar.setOnClickListener {
+            //Para alejar la imagen mandamos llamar a la funcion alejar
+            imgBit = (imagen.getDrawable() as BitmapDrawable).bitmap
+            imagen.setImageBitmap(Filtros.alejar(imgBit))
         }
     }
     private fun btngaleria(){
@@ -189,6 +217,7 @@ class MainActivity : AppCompatActivity() {
             lay1.setVisibility(View.INVISIBLE)
             lay2.setVisibility(View.VISIBLE)
             imgBit = (imagen.getDrawable() as BitmapDrawable).bitmap
+            imgBit2 = (imagen.getDrawable() as BitmapDrawable).bitmap
         }
 
         //Checamos que se haya tomado la foto y la peticion venga de RespuestaCamara
@@ -198,6 +227,7 @@ class MainActivity : AppCompatActivity() {
             lay1.setVisibility(View.INVISIBLE)
             lay2.setVisibility(View.VISIBLE)
             imgBit = (imagen.getDrawable() as BitmapDrawable).bitmap
+            imgBit2 = (imagen.getDrawable() as BitmapDrawable).bitmap
         }
     }
 

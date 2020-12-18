@@ -42,6 +42,7 @@
         android:background="@null"
         android:src="@drawable/fondofoto1"
         />
+
     </LinearLayout>
 
     <LinearLayout
@@ -53,9 +54,43 @@
         android:visibility="invisible"
         android:id="@+id/lay2">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:textAlignment="center"
+            android:gravity="center_horizontal"
+            >
+            <ImageButton
+                android:id="@+id/zoomIm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="25dp"
+                android:background="@null"
+                android:src="@drawable/iconoacercar" />
+            <ImageButton
+                android:id="@+id/alejar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="25dp"
+                android:background="@null"
+                android:src="@drawable/iconoalejar" />
+            <ImageButton
+                android:id="@+id/guardar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="25dp"
+                android:background="@null"
+                android:src="@drawable/btnguardar" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:fontFamily="cursive"
             android:text="Elige el filtro"
@@ -67,15 +102,15 @@
             android:layout_height="wrap_content"
             android:fontFamily="cursive"
             android:layout_marginTop="10dp"/>
-
         <ImageButton
             android:id="@+id/regresar"
             android:layout_width="wrap_content"
             android:layout_height="127dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:background="@null"
             android:src="@drawable/botonregresar1" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -647,4 +647,110 @@ object Filtros {
         resultado.setPixels(pixeles, 0, ancho, 0, 0, ancho, alto)
         return resultado
     }
+
+    //Para el zoom
+    fun  zoom(bitmap: Bitmap): Bitmap {
+        var bitmap2 = bitmap
+        var a: Int
+        var r: Int
+        var g: Int
+        var b: Int
+        val alto = bitmap2.height
+        val ancho = bitmap2.width
+        var pixel: Int
+        var bandera = 1
+        //Creamos un nuevo bitmap
+        var resultado = Bitmap.createBitmap((bitmap2.width)*2, (bitmap.height)*2, bitmap2.config)
+
+        for (y in 0 until alto) {
+            for (x in 0 until ancho) {
+                //Dandole los colores con RGB
+                pixel = bitmap.getPixel(x, y)
+                a = Color.alpha(pixel)
+                r = Color.red(pixel)
+                g = Color.green(pixel)
+                b = Color.blue(pixel)
+
+                    var ejex: Int = x
+                    var ejey: Int = y
+                    ejex *= 2
+                    ejey *= 2
+                    for(y2 in ejey until (ejey+2)){
+                        for(x2 in ejex until (ejex+2)){
+                            resultado.setPixel(x2, y2, Color.argb(a, r, g, b))
+                        }
+                    }
+                //resultado = agrandar(x,y,a,r,g,b, resultado)
+            }
+        }
+
+        return resultado
+    }
+    fun  alejar(bitmap: Bitmap): Bitmap {
+        var bitmap2 = bitmap
+        var a: Int
+        var r: Int
+        var g: Int
+        var b: Int
+        val alto = bitmap2.height
+        val ancho = bitmap2.width
+        var pixel: Int
+        var bandera = 1
+        //Creamos un nuevo bitmap
+        var resultado = Bitmap.createBitmap((bitmap2.width)*2, (bitmap.height)*2, bitmap2.config)
+
+        for (y in 0 until alto) {
+            for (x in 0 until ancho) {
+                //Dandole los colores con RGB
+                pixel = bitmap.getPixel(x, y)
+                a = Color.alpha(pixel)
+                r = Color.red(pixel)
+                g = Color.green(pixel)
+                b = Color.blue(pixel)
+
+                var ejex: Int = x
+                var ejey: Int = y
+                if((x ==0) && (y ==0)){
+                    ejex = ejex
+                    ejey = ejey
+                }else if(y==0){
+                    ejex +=1
+                }else if(x==0){
+                    ejey +=1
+                }else {
+                    ejex +=1
+                    ejey +=1
+                }
+                for(y in ejey until (ejey+2)){
+                    for(x in ejex until (ejex+2)){
+                        resultado.setPixel(x, y, Color.argb(a, r, g, b))
+                    }
+                }
+                //resultado = agrandar(x,y,a,r,g,b, resultado)
+            }
+        }
+
+        return resultado
+    }
+    private fun agrandar(x2: Int, y2: Int, a2: Int, r2: Int, g2: Int, b2: Int, res: Bitmap): Bitmap {
+        var ejex: Int = x2
+        var ejey: Int = y2
+        if((x2 ==0) && (y2 ==0)){
+           ejex = ejex
+           ejey = ejey
+        }else if(y2==0 && x2!=0){
+            ejex *=2
+        }else if(x2==0 && y2!=0){
+            ejey *=2
+        }else if(x2!=0 && y2!=0){
+            ejex *=2
+            ejey *=2
+        }
+        for(y in ejey until (ejey+2)){
+            for(x in ejex until (ejex+2)){
+                res.setPixel(x, y, Color.argb(a2, r2, g2, b2))
+            }
+        }
+        return res
+    }
 }
