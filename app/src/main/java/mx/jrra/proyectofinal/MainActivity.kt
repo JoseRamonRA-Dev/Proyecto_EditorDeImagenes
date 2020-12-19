@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var bandera = 0
     private lateinit var imgBit: Bitmap
     private lateinit var imgBit2: Bitmap
+    private lateinit var imgBit3: Bitmap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -106,8 +107,8 @@ class MainActivity : AppCompatActivity() {
                     imagen.setImageBitmap(Filtros.noise(imgBit))
                 }
 
-                imgBit = (imagen.getDrawable() as BitmapDrawable).bitmap
-
+                imgBit2 = (imagen.getDrawable() as BitmapDrawable).bitmap
+                imgBit3 = (imagen.getDrawable() as BitmapDrawable).bitmap
             }
         }
     }
@@ -123,20 +124,20 @@ class MainActivity : AppCompatActivity() {
         guardar.setOnClickListener {
             //Creamos una instancia de la clase Guardar, para enviarle la imagen a guardar en el dispositivo
             val dispositivo = Guardar()
-            dispositivo.guardar(this, imgBit)
+            dispositivo.guardar(this, imgBit3)
         }
     }
     private fun acercar(){
         zoomIm.setOnClickListener {
             //Para el zoom enviamos la imagen y esta sera procesada por la funcion Zoom
-            imagen.setImageBitmap(Filtros.zoom(imgBit))
+            imagen.setImageBitmap(Filtros.zoom(imgBit3))
         }
     }
     private fun alejar(){
         alejar.setOnClickListener {
             //Para alejar la imagen mandamos llamar a la funcion alejar
-            imgBit = (imagen.getDrawable() as BitmapDrawable).bitmap
-            imagen.setImageBitmap(Filtros.alejar(imgBit))
+            imgBit2 = (imagen.getDrawable() as BitmapDrawable).bitmap
+            imagen.setImageBitmap(Filtros.alejar(imgBit2))
         }
     }
     private fun btngaleria(){
@@ -218,6 +219,7 @@ class MainActivity : AppCompatActivity() {
             lay2.setVisibility(View.VISIBLE)
             imgBit = (imagen.getDrawable() as BitmapDrawable).bitmap
             imgBit2 = (imagen.getDrawable() as BitmapDrawable).bitmap
+            imgBit3 = (imagen.getDrawable() as BitmapDrawable).bitmap
         }
 
         //Checamos que se haya tomado la foto y la peticion venga de RespuestaCamara
@@ -228,6 +230,7 @@ class MainActivity : AppCompatActivity() {
             lay2.setVisibility(View.VISIBLE)
             imgBit = (imagen.getDrawable() as BitmapDrawable).bitmap
             imgBit2 = (imagen.getDrawable() as BitmapDrawable).bitmap
+            imgBit3 = (imagen.getDrawable() as BitmapDrawable).bitmap
         }
     }
 
